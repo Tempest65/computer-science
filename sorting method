@@ -1,0 +1,145 @@
+import javax.swing.*;
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.*;
+
+public class LandWater {
+  
+  
+  //function that finds the index of name entered
+  public static int findName (String array[], String name){
+    //go through the whole array
+    for (int i = 0; i< array.length;i++) {
+      if(array[i].equalsIgnoreCase(name)==true){
+        return i;//name found, return the index of the name
+      }
+      
+    }
+    return -1;//not found, return a negative index
+  }
+  
+  //function that gets number of lines
+  public static int getLines() throws IOException{
+    BufferedReader input = new BufferedReader(new FileReader("landwater.txt"));
+    int lines = 0;
+    while(input.readLine() != null) lines ++;
+    input.close();
+    lines = lines/3;
+    return lines;
+  }
+  
+  public static void sortArea(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
+
+        for (int i = 0 ; i < province.length ; i++)         {//loop through to compare two elements next to each other            
+          for (int j = 0 ; j < province.length - 1 ; j++)            {//compare one element to the next               
+            if (water [j] < water [j + 1])                {// swap net worth if not in descending order                    
+              double tempWater = water [j];                    
+              water [j] = water [j + 1];                    
+              water [j + 1] = tempWater;// swap names to keep lists correct                    
+              String tempProvince = province [j];                    
+              province [j] = province [j + 1];                   
+              province [j + 1] = tempProvince;
+              double tempWaterArea = waterArea[j];
+              waterArea[j]= waterArea[j+1];
+              waterArea[j+1] = tempWaterArea;
+              double tempArea = totalArea[j];
+               totalArea [j] = totalArea[j+1];
+               totalArea[j+1]= tempArea;
+              
+            }   
+          }      
+        }
+        
+        public static void sortName(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
+
+        for (int i = 0 ; i < province.length ; i++)         {//loop through to compare two elements next to each other            
+          for (int j = 0 ; j < province.length - 1 ; j++)            {//compare one element to the next               
+            if (province[j].compareTo(celebNames[j+1]water [j] < water [j + 1])                {// swap net worth if not in descending order                    
+              double tempWater = water [j];                    
+              water [j] = water [j + 1];                    
+              water [j + 1] = tempWater;// swap names to keep lists correct                    
+              String tempProvince = province [j];                    
+              province [j] = province [j + 1];                   
+              province [j + 1] = tempProvince;
+              double tempWaterArea = waterArea[j];
+              waterArea[j]= waterArea[j+1];
+              waterArea[j+1] = tempWaterArea;
+              double tempArea = totalArea[j];
+               totalArea [j] = totalArea[j+1];
+               totalArea[j+1]= tempArea;
+              
+            }   
+          }      
+        }
+        
+        
+        String list = View(province,totalArea,waterArea,water,percentFormat);
+    
+    JTextArea outputArea = new JTextArea();
+    outputArea.setText(list);
+    JOptionPane.showMessageDialog(null,outputArea,"Sorted in descending order by water%", JOptionPane.INFORMATION_MESSAGE);
+  }
+  
+  
+  public static String View (String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
+    
+    
+    String list = "Province                                \tTotal Area(sq.km)              \tWater Area(sq.km)\t%Water\n";
+    list = list + "\n======                                \t===============              \t===============\t=====\n";
+    
+    for (int i = 0; i <province.length;i++) {
+      list = list + "\n" + province [i] + "                  \t"+ totalArea [i] + "                         \t" + waterArea [i] +  "                                 \t" + percentFormat.format(water[i]);  
+    }
+    
+    return list;
+  }
+  
+  public static void Read(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
+  
+     String list = View(province,totalArea,waterArea,water,percentFormat);
+    
+    JTextArea outputArea = new JTextArea();
+    outputArea.setText(list);
+    JOptionPane.showMessageDialog(null,outputArea,"Original File", JOptionPane.INFORMATION_MESSAGE);
+    
+    
+    
+  }
+  
+  
+  public static void main(String[] args) throws IOException {
+    DecimalFormat percentFormat = new DecimalFormat ("##.##%");
+    //declare variables
+    String province [];
+    double totalArea [],waterArea [],water[];
+    BufferedReader input = new BufferedReader(new FileReader("landwater.txt")); 
+    int lines = getLines();
+    //create arrays
+    province = new String [lines];
+    totalArea = new double [lines];
+    waterArea = new double [lines];
+    water = new double [lines];
+    
+    //String fileSort = "Original File";
+    
+    for (int i = 0;i < province.length;i++) {
+      province [i] = input.readLine();
+      totalArea [i] = Double.parseDouble(input.readLine());
+      waterArea [i] = Double.parseDouble(input.readLine());
+      water[i] = (waterArea [i]/totalArea [i]) ;//calclates water%
+   
+    }
+    try{
+    Read(province,totalArea,waterArea,water,percentFormat);
+    } catch (Exception error){
+      
+    }
+    
+try{
+    sortArea(province,totalArea,waterArea,water,percentFormat);
+    } catch (Exception error){
+    }
+      
+     input.close();
+  } 
+}
