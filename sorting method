@@ -3,7 +3,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class LandWater {
+public class unknown {
   
   
   //function that finds the index of province entered
@@ -41,58 +41,58 @@ public class LandWater {
   }
   
   public static String sortArea(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
-
-        for (int i = 0 ; i < province.length ; i++)         {//loop through to compare two elements next to each other            
-          for (int j = 0 ; j < province.length - 1 ; j++)            {//compare one element to the next               
-            if (water [j] < water [j + 1])                {// swap net worth if not in descending order                    
-              double tempWater = water [j];                    
-              water [j] = water [j + 1];                    
-              water [j + 1] = tempWater;// swap names to keep lists correct                    
-              String tempProvince = province [j];                    
-              province [j] = province [j + 1];                   
-              province [j + 1] = tempProvince;
-              double tempWaterArea = waterArea[j];
-              waterArea[j]= waterArea[j+1];
-              waterArea[j+1] = tempWaterArea;
-              double tempArea = totalArea[j];
-               totalArea [j] = totalArea[j+1];
-               totalArea[j+1]= tempArea;
-              
-            }   
-          }      
-        }
-        String list = View(province,totalArea,waterArea,water,percentFormat);
     
-        return list;
-   
-  }
-        
-        public static String sortName(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
-
-        for (int i = 0 ; i < province.length ; i++)         {//loop through to compare two elements next to each other            
-          for (int j = 0 ; j < province.length - 1 ; j++)            {//compare one element to the next               
-            if (province[j].compareTo(province[j+1])<0)                {// swap net worth if not in descending order                    
-              double tempWater = water [j];                    
-              water [j] = water [j + 1];                    
-              water [j + 1] = tempWater;// swap names to keep lists correct                    
-              String tempProvince = province [j];                    
-              province [j] = province [j + 1];                   
-              province [j + 1] = tempProvince;
-              double tempWaterArea = waterArea[j];
-              waterArea[j]= waterArea[j+1];
-              waterArea[j+1] = tempWaterArea;
-              double tempArea = totalArea[j];
-               totalArea [j] = totalArea[j+1];
-               totalArea[j+1]= tempArea;
-               
-            }   
-          }      
-        }
-       
-        
-        String list = View(province,totalArea,waterArea,water,percentFormat);
+    for (int i = 0 ; i < province.length ; i++)         {//loop through to compare two elements next to each other            
+      for (int j = 0 ; j < province.length - 1 ; j++)            {//compare one element to the next               
+        if (water [j] < water [j + 1])                {// swap net worth if not in descending order                    
+          double tempWater = water [j];                    
+          water [j] = water [j + 1];                    
+          water [j + 1] = tempWater;// swap names to keep lists correct                    
+          String tempProvince = province [j];                    
+          province [j] = province [j + 1];                   
+          province [j + 1] = tempProvince;
+          double tempWaterArea = waterArea[j];
+          waterArea[j]= waterArea[j+1];
+          waterArea[j+1] = tempWaterArea;
+          double tempArea = totalArea[j];
+          totalArea [j] = totalArea[j+1];
+          totalArea[j+1]= tempArea;
+          
+        }   
+      }      
+    }
+    String list = View(province,totalArea,waterArea,water,percentFormat);
+    
     return list;
-
+    
+  }
+  
+  public static String sortName(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
+    
+    for (int i = 0 ; i < province.length ; i++)         {//loop through to compare two elements next to each other            
+      for (int j = 0 ; j < province.length - 1 ; j++)            {//compare one element to the next               
+        if (province[j].compareTo(province[j+1])<0)                {// swap net worth if not in descending order                    
+          double tempWater = water [j];                    
+          water [j] = water [j + 1];                    
+          water [j + 1] = tempWater;// swap names to keep lists correct                    
+          String tempProvince = province [j];                    
+          province [j] = province [j + 1];                   
+          province [j + 1] = tempProvince;
+          double tempWaterArea = waterArea[j];
+          waterArea[j]= waterArea[j+1];
+          waterArea[j+1] = tempWaterArea;
+          double tempArea = totalArea[j];
+          totalArea [j] = totalArea[j+1];
+          totalArea[j+1]= tempArea;
+          
+        }   
+      }      
+    }
+    
+    
+    String list = View(province,totalArea,waterArea,water,percentFormat);
+    return list;
+    
   }
   
   
@@ -110,10 +110,10 @@ public class LandWater {
   }
   
   public static String Read(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
-  
-     String list = View(province,totalArea,waterArea,water,percentFormat);
+    
+    String list = View(province,totalArea,waterArea,water,percentFormat);
     return list;
-
+    
     
     
     
@@ -121,11 +121,15 @@ public class LandWater {
   
   
   public static void main(String[] args) throws IOException {
+    try{
     DecimalFormat percentFormat = new DecimalFormat ("##.##%");
     //declare variables
     String province [];
     double totalArea [],waterArea [],water[];
-    BufferedReader input = new BufferedReader(new FileReader("landwater.txt")); 
+    String name=JOptionPane.showInputDialog(null,"Enter Name of file to be read","landwater.txt");
+     
+    BufferedReader input = new BufferedReader(new FileReader(name));
+  
     int lines = getLines();
     //create arrays
     province = new String [lines];
@@ -134,48 +138,54 @@ public class LandWater {
     water = new double [lines];
     
     //String fileSort = "Original File";
-    
+    try{
     for (int i = 0;i < province.length;i++) {
       province [i] = input.readLine();
       totalArea [i] = Double.parseDouble(input.readLine());
       waterArea [i] = Double.parseDouble(input.readLine());
       water[i] = (waterArea [i]/totalArea [i]) ;//calclates water%
-   
+      
+    }
+     } catch (Exception error){JOptionPane.showMessageDialog(null, "FILE IS CORRUPT, UNABLE TO READ");System.exit(0);
+      
     }
     try{
-    String list = Read(province,totalArea,waterArea,water,percentFormat);
-    JTextArea outputArea = new JTextArea();
-    outputArea.setText(list);
-    JOptionPane.showMessageDialog(null,outputArea,"Original File", JOptionPane.INFORMATION_MESSAGE);
-    
+      String list = Read(province,totalArea,waterArea,water,percentFormat);
+      JTextArea outputArea = new JTextArea();
+      outputArea.setText(list);
+      JOptionPane.showMessageDialog(null,outputArea,"Original File", JOptionPane.INFORMATION_MESSAGE);
+      
     } catch (Exception error){
       
     }
     
-try{
-    String list = sortArea(province,totalArea,waterArea,water,percentFormat);
-    JTextArea outputArea = new JTextArea();
-    outputArea.setText(list);
-    JOptionPane.showMessageDialog(null,outputArea,"Sorted in Alphabetical Order", JOptionPane.INFORMATION_MESSAGE);
+    try{
+      String list = sortArea(province,totalArea,waterArea,water,percentFormat);
+      JTextArea outputArea = new JTextArea();
+      outputArea.setText(list);
+      JOptionPane.showMessageDialog(null,outputArea,"Sorted in Alphabetical Order", JOptionPane.INFORMATION_MESSAGE);
     } catch (Exception error){
     }
     
     try{
-    String list = sortName(province,totalArea,waterArea,water,percentFormat);
-    JTextArea outputArea = new JTextArea();
-    outputArea.setText(list);
-    JOptionPane.showMessageDialog(null,outputArea,"Sorted in Alphabetical Order", JOptionPane.INFORMATION_MESSAGE);
+      String list = sortName(province,totalArea,waterArea,water,percentFormat);
+      JTextArea outputArea = new JTextArea();
+      outputArea.setText(list);
+      JOptionPane.showMessageDialog(null,outputArea,"Sorted in Alphabetical Order", JOptionPane.INFORMATION_MESSAGE);
     } catch (Exception error){
     }
+    
     try{
       String find = JOptionPane.showInputDialog(null,"Enter name of province to get info");
       String list = getInfo(find,province,totalArea,waterArea,water,percentFormat);
-    JTextArea outputArea = new JTextArea();
-    outputArea.setText(list);
-    JOptionPane.showMessageDialog(null,outputArea,"Info", JOptionPane.INFORMATION_MESSAGE);
-      } catch (Exception error){
+      JTextArea outputArea = new JTextArea();
+      outputArea.setText(list);
+      JOptionPane.showMessageDialog(null,outputArea,"Info", JOptionPane.INFORMATION_MESSAGE);
+    } catch (Exception error){
     }
-      
-     input.close();
+    
+    input.close();
+    } catch (Exception error){JOptionPane.showMessageDialog(null, "ERROR IN FILE, PLEASE ENTER LEGITIMATE FILE NAME");System.exit(0);
+    }
   } 
 }
