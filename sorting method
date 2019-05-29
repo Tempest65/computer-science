@@ -1,35 +1,178 @@
 import javax.swing.*;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.*;
 
-public class unknown {
+//CMXRG
+public class LandWater {
+  
+  //function that creates 2 files with highwater - provinces with %water over 10 and lowwater-provinces with %water less than 10
+  public static void HighLow(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException{
+    Object[] options = {"Yes", "No"};
+    
+    int choice = JOptionPane.showOptionDialog(null,"Would you like to create two different files containing the %Wate less than 10% and more than 10%","%Water Calculator",
+                                              JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE, null,options,options[0]);//asks user if he wants to play again
+    
+    
+    
+    if (choice==0){
+      //prints array elements
+      FileWriter file = new FileWriter("HIGHWATER.txt");
+      PrintWriter output = new PrintWriter(file);
+      FileWriter file2 = new FileWriter("LOWWATER.txt");
+      PrintWriter output2 = new PrintWriter(file2);
+      output.println("Province                            \tTotal Area(sq.km)                 \tWater Area(sq.km)                 \t%Water");
+      output.println("=======                              \t===============                   \t===============                   \t=====");
+      output2.println("Province                            \tTotal Area(sq.km)                 \tWater Area(sq.km)                 \t%Water");
+      output2.println("=======                              \t===============                   \t===============                   \t=====");
+      
+      //prints for HIGHWATER file
+      for (int i = 0; i < province.length;i++){
+        if(water[i]>0.1){
+          output.println(province [i] + "                        \t"+ totalArea [i] + "                         \t" + waterArea [i] +  "                             \t" + percentFormat.format(water[i]));
+        }
+      }
+      //prints for LOWWATER file
+      for (int i = 0; i < province.length;i++){
+        if(water[i]<0.1){
+          output2.println(province [i] + "                        \t"+ totalArea [i] + "                         \t" + waterArea [i] +  "                             \t" + percentFormat.format(water[i]));
+        }
+      }
+      //closes files
+      output.close();
+      output2.close();
+      
+      JOptionPane.showMessageDialog(null,"Files have been saved as HIGHWATER and LOWWATER");
+      JOptionPane.showMessageDialog(null,"Thanks for using %Water Calculator");
+    }
+    else if(choice == 1){
+      JOptionPane.showMessageDialog(null,"Thanks for using %Water Calculator");
+    }
+  }
+  
+  //function that prints array elemnts into a txt file
+  public static void Print(String fileName,String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException{
+    
+    FileWriter file = new FileWriter(fileName + ".txt");
+    PrintWriter output = new PrintWriter(file);
+    output.println("Province                             \tTotal Area(sq.km)                 \tWater Area(sq.km)                 \t%Water");
+    output.println("=======                               \t===============                   \t===============                   \t=====");
+    
+    
+    //prints array elements
+    for (int i = 0; i < province.length;i++){
+      output.println(province [i] + "                           \t"+ totalArea [i] + "                         \t" + waterArea [i] +  "                             \t" + percentFormat.format(water[i]));
+    }
+    output.close();
+  }
+  
+  //function that gives the user the choice to update the water area of the province
+  public static void Update(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException{
+    Object[] options = {"Yes", "No"};
+    
+    int p = JOptionPane.showOptionDialog(null,"Would you like to update Water Area Information?","%Water Calculator",
+                                         JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE, null,options,options[0]);//asks user if he wants to play again
+    
+    //links buttons to if statements
+    if(p == 0){
+      String find = JOptionPane.showInputDialog(null,"Enter the name of the province to update information");
+      int index = findProvince(province,find);
+      if (0>index) JOptionPane.showMessageDialog(null,"Name not found");//informs user that the province entered was not found
+      else if (index>0) {
+        waterArea[index] = Double.parseDouble(JOptionPane.showInputDialog(null,"Enter updated water area of " + find));
+        while(waterArea[index]>totalArea[index]) waterArea[index] = Double.parseDouble(JOptionPane.showInputDialog(null,"Water are cannot be larger than total area pleases enter an area less than "+ totalArea[index] +" for "+ find));
+        water[index] = waterArea[index]/totalArea[index];
+        
+        //creates buttons
+        Object[] options2 = {"Yes", "No"};
+        //prompts user to select wheteher he would like to name the file o not
+        int s = JOptionPane.showOptionDialog(null,"Would you like to name the file to be saved?","Land Water Calculator",
+                                             JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE, null,options2,options2[0]);//asks user if he wants to play again
+        
+        if(s == 0){
+          String fileName = JOptionPane.showInputDialog(null,"Enter the name of the file you would like to save as");
+          Print(fileName,province,totalArea,waterArea,water,percentFormat);
+        }
+        //saves file by default name
+        else if(s == 1){
+          String fileName = "LandWaterFile";
+          Print(fileName,province,totalArea,waterArea,water,percentFormat);
+          JOptionPane.showMessageDialog(null,"File had been saved by default name LandWaterFile");
+          
+        }
+        
+      }
+    }
+    //saves file by default name
+    else if(p == 1){
+      String fileName = "LandWaterFile";
+      Print(fileName,province,totalArea,waterArea,water,percentFormat);
+      JOptionPane.showMessageDialog(null,"File had been saved by default name LandWaterFile");
+      
+    }
+    
+    
+  }
   
   
-  //function that finds the index of province entered
-  public static int findName (String array[], String name){
-    //search the array
-    for (int i = 0; i< array.length;i++) {
+  //function that sorts provinces based on %water in descending order
+  public static String sortArea (String[] province,double totalArea[],double waterArea[],double water[],DecimalFormat percentFormat) throws IOException{
+    for (int i = 0; i <province.length; i++){
+      for(int j = 0; j < province.length - 1; j++) {
+        if(water[j] < water[j+1]) {
+          double tempWater = water[j];
+          water [j] = water[j+1];
+          water[j+1] = tempWater;
+          String tempProvince = province[j];
+          province [j] = province[j+1];
+          province[j+1] = tempProvince;
+          double tempWaterArea = waterArea[j];
+          waterArea [j] = waterArea[j+1];
+          waterArea[j+1] = tempWaterArea;
+          double tempArea = totalArea[j];
+          totalArea [j] = totalArea[j+1];
+          totalArea[j+1] = tempArea;
+        }
+      }
+    }
+    String list = View(province,totalArea,waterArea,water,percentFormat);
+    return list;
+  }
+  //function that sorts provinces in alphabetical order
+  public static String sortName (String[] province,double totalArea[],double waterArea[],double water[],DecimalFormat percentFormat) throws IOException{
+    for (int i = 0; i <province.length; i++){
+      for(int j = 0; j < province.length - 1; j++) {
+        if(province[j].compareTo(province[j+1])>0) {
+          double tempWater = water[j];
+          water [j] = water[j+1];
+          water[j+1] = tempWater;
+          String tempProvince = province[j];
+          province [j] = province[j+1];
+          province[j+1] = tempProvince;
+          double tempWaterArea = waterArea[j];
+          waterArea [j] = waterArea[j+1];
+          waterArea[j+1] = tempWaterArea;
+          double tempArea = totalArea[j];
+          totalArea [j] = totalArea[j+1];
+          totalArea[j+1] = tempArea;
+        }
+      }
+    }
+    String list = View(province,totalArea,waterArea,water,percentFormat);
+    return list;
+  }
+  
+  
+  //function that finds index of province entered
+  public static int findProvince(String array[], String name) {
+    //searcxh the array
+    for (int i = 0; i< array.length;i++){
       if(array[i].equalsIgnoreCase(name)==true){
-        return i;//province found, return the index of the province
+        return i; //index found                                    
       }
       
     }
-    return -1;//not found, return a negative index
+    return -1;//index not found
   }
-  
-  //function that gets the information of the province entered
-  public static String getInfo (String nameToFind,String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat) throws IOException {
-    String info ="";
-    int loc = findName(province,nameToFind);
-    
-    //display the information of the celebrity
-    if(loc >=0)  info = province[loc] + " has a total area of "    + totalArea[loc] +  ", water area of "  + waterArea[loc] + "and water percent of " + percentFormat.format(water[loc]);
-    else info = nameToFind + " not found ";
-    return info;
-  }
-  
-  
   //function that gets number of lines
   public static int getLines() throws IOException{
     BufferedReader input = new BufferedReader(new FileReader("landwater.txt"));
@@ -39,66 +182,21 @@ public class unknown {
     lines = lines/3;
     return lines;
   }
-  
-  public static String sortArea(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
+  //function that gets information about province entered
+  public static String getInfo (String provinceToFind,String[] province,double totalArea[],double waterArea[],double water[],DecimalFormat percentFormat) throws IOException{
+    String info = "";
+    int loc = findProvince(province,provinceToFind);
     
-    for (int i = 0 ; i < province.length ; i++)         {//loop through to compare two elements next to each other            
-      for (int j = 0 ; j < province.length - 1 ; j++)            {//compare one element to the next               
-        if (water [j] < water [j + 1])                {// swap net worth if not in descending order                    
-          double tempWater = water [j];                    
-          water [j] = water [j + 1];                    
-          water [j + 1] = tempWater;// swap names to keep lists correct                    
-          String tempProvince = province [j];                    
-          province [j] = province [j + 1];                   
-          province [j + 1] = tempProvince;
-          double tempWaterArea = waterArea[j];
-          waterArea[j]= waterArea[j+1];
-          waterArea[j+1] = tempWaterArea;
-          double tempArea = totalArea[j];
-          totalArea [j] = totalArea[j+1];
-          totalArea[j+1]= tempArea;
-          
-        }   
-      }      
-    }
-    String list = View(province,totalArea,waterArea,water,percentFormat);
+    if(loc >=0) info = province[loc] + " has a total area of " + totalArea[loc] + ", water area of " + waterArea[loc] + " and water percent of " + percentFormat.format(water[loc]);
     
-    return list;
-    
+    else info = provinceToFind + " not found ";
+    return info;
   }
   
-  public static String sortName(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
-    
-    for (int i = 0 ; i < province.length ; i++)         {//loop through to compare two elements next to each other            
-      for (int j = 0 ; j < province.length - 1 ; j++)            {//compare one element to the next               
-        if (province[j].compareTo(province[j+1])<0)                {// swap net worth if not in descending order                    
-          double tempWater = water [j];                    
-          water [j] = water [j + 1];                    
-          water [j + 1] = tempWater;// swap names to keep lists correct                    
-          String tempProvince = province [j];                    
-          province [j] = province [j + 1];                   
-          province [j + 1] = tempProvince;
-          double tempWaterArea = waterArea[j];
-          waterArea[j]= waterArea[j+1];
-          waterArea[j+1] = tempWaterArea;
-          double tempArea = totalArea[j];
-          totalArea [j] = totalArea[j+1];
-          totalArea[j+1]= tempArea;
-          
-        }   
-      }      
-    }
-    
-    
-    String list = View(province,totalArea,waterArea,water,percentFormat);
-    return list;
-    
-  }
-  
-  
+  //function that adds array elements and creates list for viewing
   public static String View (String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
     
-    
+    //creates list
     String list = "Province                                \tTotal Area(sq.km)              \tWater Area(sq.km)\t%Water\n";
     list = list + "\n======                                \t===============              \t===============\t=====\n";
     
@@ -108,84 +206,92 @@ public class unknown {
     
     return list;
   }
-  
-  public static String Read(String[] province,double totalArea[] ,double waterArea[] ,double water[],DecimalFormat percentFormat)throws IOException {
-    
-    String list = View(province,totalArea,waterArea,water,percentFormat);
-    return list;
-    
-    
-    
-    
-  }
-  
-  
+ 
+  //main method
   public static void main(String[] args) throws IOException {
     try{
-    DecimalFormat percentFormat = new DecimalFormat ("##.##%");
-    //declare variables
-    String province [];
-    double totalArea [],waterArea [],water[];
-    String name=JOptionPane.showInputDialog(null,"Enter Name of file to be read","landwater.txt");
-     
-    BufferedReader input = new BufferedReader(new FileReader(name));
-  
-    int lines = getLines();
-    //create arrays
-    province = new String [lines];
-    totalArea = new double [lines];
-    waterArea = new double [lines];
-    water = new double [lines];
-    
-    //String fileSort = "Original File";
-    try{
-    for (int i = 0;i < province.length;i++) {
-      province [i] = input.readLine();
-      totalArea [i] = Double.parseDouble(input.readLine());
-      waterArea [i] = Double.parseDouble(input.readLine());
-      water[i] = (waterArea [i]/totalArea [i]) ;//calclates water%
+      //declare decimal format
+      DecimalFormat percentFormat = new DecimalFormat ("##.##%");
+      //declare variables
+      String province [];
+      double totalArea [],waterArea [],water[];
+      String name=JOptionPane.showInputDialog(null,"Enter Name of file to be read","landwater.txt");
       
-    }
-     } catch (Exception error){JOptionPane.showMessageDialog(null, "FILE IS CORRUPT, UNABLE TO READ");System.exit(0);
+      BufferedReader input = new BufferedReader(new FileReader(name));//declare buffer reader
+      int provinceN = getLines();//gets number of provinces
+      JOptionPane.showMessageDialog(null,"There are " + provinceN +" provinces in this file");//tells user how many provinces are in the file
+      int lines = getLines();//calls function to get lines
+      //create arrays
+      province = new String [lines];
+      totalArea = new double [lines];
+      waterArea = new double [lines];
+      water = new double [lines];
       
-    }
-    try{
-      String list = Read(province,totalArea,waterArea,water,percentFormat);
-      JTextArea outputArea = new JTextArea();
-      outputArea.setText(list);
-      JOptionPane.showMessageDialog(null,outputArea,"Original File", JOptionPane.INFORMATION_MESSAGE);
+      //reads lines, gets array elements
+      try{
+        for (int i = 0;i < province.length;i++) {
+          province [i] = input.readLine();
+          totalArea [i] = Double.parseDouble(input.readLine());
+          waterArea [i] = Double.parseDouble(input.readLine());
+          water[i] = (waterArea [i]/totalArea [i]);
+        }
+      } catch (Exception error){JOptionPane.showMessageDialog(null, "FILE IS CORRUPT, UNABLE TO READ");System.exit(0);
+        
+      }
       
-    } catch (Exception error){
       
+      try{
+        String list = View(province,totalArea,waterArea,water,percentFormat);//calls method to view original file
+        JTextArea outputArea = new JTextArea();
+        outputArea.setText(list);
+        JOptionPane.showMessageDialog(null,outputArea,"Original File",JOptionPane.INFORMATION_MESSAGE);//displays original file
+      } catch (Exception error){
+      }
+      Object[] options = {"By %Water", "Alphabetical Order"};
+      
+      int choice = JOptionPane.showOptionDialog(null,"Select sort Method","%Water Calculator",
+                                                JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE, null,options,options[0]);//asks user if he wants to play again
+      if(choice==1){
+        
+        try{
+          String list = sortName(province, totalArea,waterArea,water,percentFormat);
+          JTextArea outputArea = new JTextArea();
+          outputArea.setText(list);
+          JOptionPane.showMessageDialog(null,outputArea,"Sorted in Alphabetical Order(A-Z)",JOptionPane.INFORMATION_MESSAGE);//displays sorted information
+        } catch (Exception error){
+        }
+      }
+      else if(choice==0){
+        try{
+          String list = sortArea(province,totalArea,waterArea,water,percentFormat);
+          JTextArea outputArea = new JTextArea();
+          outputArea.setText(list);
+          JOptionPane.showMessageDialog(null,outputArea,"Sorted in Descending Order by %Water", JOptionPane.INFORMATION_MESSAGE);//displays sorted information
+        } catch (Exception error){
+        }
+      }
+      try{
+        String find = JOptionPane.showInputDialog(null,"Enter name of province to get info");
+        String list = getInfo(find,province, totalArea,waterArea,water,percentFormat);//calls method to get info on province
+        JTextArea outputArea = new JTextArea();
+        outputArea.setText(list);
+        JOptionPane.showMessageDialog(null,outputArea,"Info",JOptionPane.INFORMATION_MESSAGE);//displays info
+      } catch (Exception error){
+      }
+      try{
+        Update(province,totalArea,waterArea,water,percentFormat);//calls method to update information
+        
+      } catch (Exception error){
+      }
+      try{
+        HighLow(province,totalArea,waterArea,water,percentFormat);//calls method to create 2 files based on %water
+        
+        
+      } catch (Exception error){
+      }
+      input.close();
+    } catch (FileNotFoundException error){JOptionPane.showMessageDialog(null, "FILE NOT FOUND, PLEASE ENTER LEGITIMATE FILE NAME");System.exit(0);//exits program if error is caught
     }
-    
-    try{
-      String list = sortArea(province,totalArea,waterArea,water,percentFormat);
-      JTextArea outputArea = new JTextArea();
-      outputArea.setText(list);
-      JOptionPane.showMessageDialog(null,outputArea,"Sorted in Alphabetical Order", JOptionPane.INFORMATION_MESSAGE);
-    } catch (Exception error){
-    }
-    
-    try{
-      String list = sortName(province,totalArea,waterArea,water,percentFormat);
-      JTextArea outputArea = new JTextArea();
-      outputArea.setText(list);
-      JOptionPane.showMessageDialog(null,outputArea,"Sorted in Alphabetical Order", JOptionPane.INFORMATION_MESSAGE);
-    } catch (Exception error){
-    }
-    
-    try{
-      String find = JOptionPane.showInputDialog(null,"Enter name of province to get info");
-      String list = getInfo(find,province,totalArea,waterArea,water,percentFormat);
-      JTextArea outputArea = new JTextArea();
-      outputArea.setText(list);
-      JOptionPane.showMessageDialog(null,outputArea,"Info", JOptionPane.INFORMATION_MESSAGE);
-    } catch (Exception error){
-    }
-    
-    input.close();
-    } catch (Exception error){JOptionPane.showMessageDialog(null, "ERROR IN FILE, PLEASE ENTER LEGITIMATE FILE NAME");System.exit(0);
-    }
-  } 
-}
+  }
+} 
+
